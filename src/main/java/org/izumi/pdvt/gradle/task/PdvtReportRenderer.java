@@ -1,5 +1,6 @@
 package org.izumi.pdvt.gradle.task;
 
+import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
@@ -11,9 +12,14 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import org.gradle.api.NonNullApi;
+import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.ModuleVersionIdentifier;
+import org.gradle.api.artifacts.ResolvedDependency;
+import org.gradle.api.artifacts.ResolvedModuleVersion;
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier;
 import org.gradle.api.artifacts.result.ResolutionResult;
+import org.gradle.api.internal.artifacts.DefaultProjectComponentIdentifier;
 import org.gradle.api.tasks.diagnostics.internal.ProjectDetails;
 import org.gradle.api.tasks.diagnostics.internal.graph.nodes.RenderableDependency;
 import org.gradle.api.tasks.diagnostics.internal.graph.nodes.RenderableModuleResult;
@@ -68,6 +74,30 @@ public class PdvtReportRenderer extends AbstractFileReportRenderer {
         }
 
         log(parameters, configuration.getName() + " was resolved");
+    }
+
+    /**
+     * <p>Renders own dependencies of project.</p>
+     *
+     * @param project The project.
+     */
+    public void renderItself(Project project) {
+        final Deque<ResolvedDependency> toHandle = new ArrayDeque<>();
+        project.getConfigurations().stream()
+                .filter(Configuration::isCanBeResolved)
+                .map(configuration -> configuration.getResolvedConfiguration().getFirstLevelModuleDependencies())
+                .forEach(toHandle::addAll);
+
+        final Alias source = dictionary.getAlias(toArtifact(project), generator::generate);
+
+        while (!toHandle.isEmpty()) {
+            final ResolvedDependency dependency = toHandle.pop();
+            final ResolvedModuleVersion module = dependency.getModule();
+            final ModuleVersionIdentifier identifier = module.getId();
+
+            final Alias target = dictionary.getAlias(toString(identifier), generator::generate);
+            mappings.addIfAbsent(new Mapping(source.getNewName(), target.getNewName()));
+        }
     }
 
     @Override
@@ -134,8 +164,18 @@ public class PdvtReportRenderer extends AbstractFileReportRenderer {
     }
 
     private String toString(MRenderableDependency dependency) {
+        if (dependency.getId() instanceof ModuleComponentIdentifier) {
+            return toString((ModuleComponentIdentifier) dependency.getId());
+        } else if (dependency.getId() instanceof DefaultProjectComponentIdentifier identifier) {
+            return identifier.getDisplayName();
+        } else {
+            throw new IllegalStateException("Unknown implementation of id. " +
+                    "The implementation: " + dependency.getId().getClass().getSimpleName());
+        }
+    }
+
+    private String toString(ModuleComponentIdentifier identifier) {
         final Parameters parameters = parametersSupplier.get();
-        final ModuleComponentIdentifier identifier = (ModuleComponentIdentifier) dependency.getId();
         if (!parameters.withVersions()) {
             return identifier.getGroup() + ":" + identifier.getModule();
         } else {
@@ -143,9 +183,26 @@ public class PdvtReportRenderer extends AbstractFileReportRenderer {
         }
     }
 
+    private String toString(ModuleVersionIdentifier identifier) {
+        final Parameters parameters = parametersSupplier.get();
+        if (!parameters.withVersions()) {
+            return identifier.getModule().toString();
+        } else {
+            return identifier.getModule() + ":" + identifier.getVersion();
+        }
+    }
+
     private void log(Parameters parameters, String message) {
         if (parameters.isDebug()) {
             log.appendln(message);
         }
+    }
+
+    private String toArtifact(Project project) {
+        final String group = project.getGroup().toString();
+        final String name = project.getName();
+        final String version = project.getVersion().toString();
+
+        return group + ":" + name + ":" + version;
     }
 }

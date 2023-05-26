@@ -59,6 +59,9 @@ public class GenerateAndSendPdvtFileTask extends PdvtReportTask {
             lifecycle("\t\tHandled \"" + configuration.getName() + "\" configuration");
         }
 
+        renderer.renderItself(project);
+        lifecycle("\t\tRendered first-level dependencies of the original project");
+
         renderer.complete();
         lifecycle("\tCompleted handling of configurations");
 
