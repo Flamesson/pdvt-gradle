@@ -1,5 +1,7 @@
 package org.izumi.pdvt.gradle.parameters;
 
+import java.util.Optional;
+
 import org.gradle.api.tasks.diagnostics.internal.graph.nodes.RenderableDependency;
 
 /**
@@ -16,4 +18,6 @@ public interface Parameters {
     default boolean doesNotFitToGroupFilter(RenderableDependency dependency) {
         return !doesFitToGroupFilter(dependency);
     }
+
+    Optional<String> getClientCode();
 }

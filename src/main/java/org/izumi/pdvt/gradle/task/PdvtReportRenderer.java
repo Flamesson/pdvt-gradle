@@ -1,4 +1,4 @@
-package org.izumi.pdvt.gradle;
+package org.izumi.pdvt.gradle.task;
 
 import java.util.Collection;
 import java.util.Deque;
@@ -19,6 +19,13 @@ import org.gradle.api.tasks.diagnostics.internal.graph.nodes.RenderableDependenc
 import org.gradle.api.tasks.diagnostics.internal.graph.nodes.RenderableModuleResult;
 import org.gradle.initialization.BuildClientMetaData;
 import org.gradle.internal.logging.text.StyledTextOutput;
+import org.izumi.pdvt.gradle.AbstractFileReportRenderer;
+import org.izumi.pdvt.gradle.Alias;
+import org.izumi.pdvt.gradle.Dictionary;
+import org.izumi.pdvt.gradle.File;
+import org.izumi.pdvt.gradle.MRenderableDependency;
+import org.izumi.pdvt.gradle.Mapping;
+import org.izumi.pdvt.gradle.Mappings;
 import org.izumi.pdvt.gradle.collections.DequeWrapper;
 import org.izumi.pdvt.gradle.generator.AliasGenerator;
 import org.izumi.pdvt.gradle.parameters.Parameters;

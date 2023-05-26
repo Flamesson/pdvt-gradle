@@ -7,4 +7,5 @@ public interface PdvtPluginExtension {
     Property<Boolean> getIsDeep();
     Property<String> getGroupFilter();
     Property<Boolean> getIsDebug();
+    Property<String> getClientCode();
 }

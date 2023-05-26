@@ -1,6 +1,7 @@
 package org.izumi.pdvt.gradle.parameters;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import org.gradle.api.tasks.diagnostics.internal.graph.nodes.RenderableDependency;
@@ -43,5 +44,10 @@ public class ExtensionParameters implements Parameters {
         //TODO: separate class with politics (contains, start with, regex, etc)
 
         return dependency.getName().contains(groupFilter);
+    }
+
+    @Override
+    public Optional<String> getClientCode() {
+        return Optional.ofNullable(extension.getClientCode().getOrNull());
     }
 }

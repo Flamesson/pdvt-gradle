@@ -1,6 +1,7 @@
 package org.izumi.pdvt.gradle.parameters;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import org.gradle.api.tasks.diagnostics.internal.graph.nodes.RenderableDependency;
@@ -47,5 +48,10 @@ public class ParametersStub implements Parameters {
     @Override
     public boolean isDebug() {
         return true;
+    }
+
+    @Override
+    public Optional<String> getClientCode() {
+        return Optional.empty();
     }
 }

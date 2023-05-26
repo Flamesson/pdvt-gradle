@@ -70,6 +70,11 @@ public class File implements Item {
         return !isEmpty();
     }
 
+    public void append(Object toWrite) {
+        final OpenOption option = StandardOpenOption.APPEND;
+        Utils.silently(() -> Files.writeString(path, toWrite.toString(), charset, option));
+    }
+
     public void appendln(Object toWrite) {
         final OpenOption option = StandardOpenOption.APPEND;
         Utils.silently(() -> Files.writeString(path, toWrite.toString() + System.lineSeparator(), charset, option));
