@@ -18,7 +18,7 @@ import org.izumi.pdvt.gradle.parameters.ExtensionParameters;
 import org.izumi.pdvt.gradle.validation.ValidationResult;
 
 @NonNullApi
-public class SendPdvtFileTask extends PdvtReportTask {
+public class SendAndAnalyzeTask extends PdvtReportTask {
 
     @Override
     public void generate(Project project) {
@@ -82,7 +82,7 @@ public class SendPdvtFileTask extends PdvtReportTask {
     }
 
     private String uriProvider(Code code) {
-        return code.getServer() + "/client/" + code.getCodeword() + "/files/add";
+        return code.getServer() + "/client/" + code.getCodeword() + "/files/add-and-analyze";
     }
 
     private ValidationResult validateClientCode() {

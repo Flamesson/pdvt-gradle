@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'org.izumi.pdvt.gradle'
-version = '1.0.0'
+version = '2.0.0'
 
 repositories {
     mavenCentral()
@@ -39,4 +39,9 @@ publishing {
             from components.java
         }
     }
+}
+
+pdvt {
+    withVersions = true
+    clientCode = "MS4yMS4xLmJodHRwOi8vbG9jYWxob3N0OjgwODBi"
 }

@@ -74,9 +74,13 @@ public class GenerateAndSendPdvtFileTask extends PdvtReportTask {
         mappings.delete();
         lifecycle("\tJoined intermediate files into single");
 
-        new SendableReport(result, getParameters(), getLogger()).send();
+        new SendableReport(result, getParameters(), getLogger(), this::uriProvider).send();
         lifecycle("\tSent generated file to UI-part");
         lifecycle("-> Task is completed");
+    }
+
+    private String uriProvider(Code code) {
+        return code.getServer() + "/client/" + code.getCodeword() + "/files/add";
     }
 
     private ValidationResult validateClientCode() {
