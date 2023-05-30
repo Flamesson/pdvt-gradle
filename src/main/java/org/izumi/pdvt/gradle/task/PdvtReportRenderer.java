@@ -166,7 +166,8 @@ public class PdvtReportRenderer extends AbstractFileReportRenderer {
     private String toString(MRenderableDependency dependency) {
         if (dependency.getId() instanceof ModuleComponentIdentifier) {
             return toString((ModuleComponentIdentifier) dependency.getId());
-        } else if (dependency.getId() instanceof DefaultProjectComponentIdentifier identifier) {
+        } else if (dependency.getId() instanceof DefaultProjectComponentIdentifier) {
+            final DefaultProjectComponentIdentifier identifier = (DefaultProjectComponentIdentifier) dependency.getId();
             return identifier.getDisplayName();
         } else {
             throw new IllegalStateException("Unknown implementation of id. " +
